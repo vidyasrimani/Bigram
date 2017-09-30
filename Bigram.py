@@ -7,7 +7,7 @@ vxm163230
 
 from collections import Counter
 
-totalWords = 0
+
 testSentence = """retired vice president and treasurer of"""
 
 #writes the unigram and bigram count list to file
@@ -26,8 +26,6 @@ def getTokenCount(file):
     # Split words (space separated)
     #words = re.findall('\S+', content)
     words = content.split()
-
-    totalWords = len(words)
 
     wordCount = {}
     wordCount = Counter(words)
@@ -54,12 +52,18 @@ def getBigramProb(testSentencewords, unigramCount, bigramCount):
     bigramProbability = 1
     probabiilty=1
 
+    #WITHOUT SMOOTHING
 
     if(testSentencewordCount<2):
         print ('Enter a sentence with atleast two words')
     else:
         print('Calculating probabilities')
         testSentenceBigramCount = Counter(zip(testSentencewords[1:],testSentencewords))
+
+        numerator = 0
+        denominator = 1
+        probability = 1
+        bigramProbabilityWithSmoothing = 1
 
         #Calculating probabilty without smoothing
         print('Calculating Probabilty without smoothing')
@@ -77,7 +81,34 @@ def getBigramProb(testSentencewords, unigramCount, bigramCount):
         print('---------------------------------------')
         print('Test sentence: ' + testSentence)
         print('Bigram Probabilty without smoothing : ')
-        print(bigramProbability)
+        print(bigramProbability)# TO DO --> try log probability as well
+
+    # WITH SMOOTHING
+    numerator = 1
+    denominator = 1
+    totalWords = len(unigramCount)
+    # Calculating probabilty with add one smoothing
+    print('Calculating Probabilty with add one smoothing')
+    for pair in testSentenceBigramCount.keys():  # pair has every bigram in the test sentence
+        if (pair in bigramCount.keys()):
+            numerator = bigramCount[pair]+1  # count of the bigram
+            denominator = unigramCount[pair[1]]+totalWords  # pair[1] gives the previous word in the bigram pair
+
+        else:
+            numerator = 1
+            if pair[1] in unigramCount.keys():
+                denominator = totalWords + unigramCount[pair[1]]
+            else:
+                denominator = totalWords
+        if denominator != 0:
+            probability = numerator / denominator
+        bigramProbabilityWithSmoothing *= probability
+
+        print('---------------------------------------')
+        print('Test sentence: ' + testSentence)
+        print('Bigram Probabilty with add one smoothing : ')
+        print(bigramProbabilityWithSmoothing)  # TO DO --> try log probability as well
+
 
 #PROGRAM EXECUTION BEGINS HERE
 #input file
