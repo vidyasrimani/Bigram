@@ -9,55 +9,77 @@ from collections import Counter
 import re
 
 totalWords = 0
+testSentence = """The memo
+attempts to remove the tourist board as far as possible from the
+agency"""
 
 #get the number of token(and frequencey of each token space/newline separated word)
 #This is also the unigram count
+
+
+def writeToFile(filename,countList):
+    with open(filename, 'w') as f:
+        for count in countList:
+            f.write((str(count)+'  -->  '+str(countList[count])+"\n"))
 def getTokenCount(file):
     print('Getting Token count...')
     content = open(file).read()
 
     # Split words (space separated)
-    words = re.findall('\S+', content)
+    #words = re.findall('\S+', content)
+    words = content.split()
     totalWords = len(words)
     wordCount = {}
+    wordCount = Counter(words)
 
-    for word in words:
-        if word in wordCount:
-            wordCount[word] += 1
-        else:
-            wordCount[word] = 1
-
-    #Write Contents to file
-    getBigramCount(words)
+    writeToFile('C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\unigramCount.txt', wordCount)
+    getBigramCount(words,wordCount)
 
 
-def getBigramCount(words):
+def getBigramCount(words,unigramCount):
     print('Getting Bigram count...')
     bigramCount = {}
-    #bigrams = Counter(zip(words, nextword))
     #store word and next word in BigramCount
-    for i in range (0,totalWords-1):
-        #Note to self:use Re for newline search
-        if(words[i]+" "+words[i+1]) in bigramCount:#already present
-            bigramCount[words[i] + " " + words[i + 1]] += 1
+    bigramCount = (Counter(zip(words,words[1:])))
+
+    writeToFile('C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\bigramCount.txt', bigramCount)
+    print('Unigram and Bigram counts written to file')
+
+    getBigramProb(testSentence.split(), unigramCount, bigramCount)
+
+def getBigramProb(testSentencewords, unigramCount, bigramCount):
+    print('Test Sentence words without smoothing...')
+
+    #unzipping words from bigramCount.keys()
+    #ord1,word2=zip(*(bigramCount.keys()))
+
+    testSentencewordCount = len(testSentencewords)
+    testSentenceBigramCount = {}
+
+    if(testSentencewordCount<2):
+        print ('Enter a sentence with atleast two words')
+    else:
+        print('Calculating probabilities')
+        testSentenceBigram = Counter(zip(testSentencewords, testSentencewords[1:]))
+        for pair in testSentenceBigram.keys():
+            if (pair  in bigramCount.keys()):
+                print(pair)
         else:
-            bigramCount[words[i] + " " + words[i + 1]] += 1
-    #write content to file
+            print('okay')
 
-def getBigramProb():
-    print('getting Bigram Probabilty...')
-
+        writeToFile('C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\testSentenceBigramCount.txt', testSentenceBigramCount)
 
 #PROGRAM EXECUTION BEGINS HERE
 #input file
 file ='C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\corpus.txt'
 #file=input("Enter file path to corpus")
-
 #testSentence = input('Enter Test Sentence')
-testSentence = ''
-
+print('Calculating count of tokens')
 getTokenCount(file)
-#getBigramProb()
+
+
+
+
 
 print ('Done')
 
