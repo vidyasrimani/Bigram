@@ -7,9 +7,10 @@
 
 from collections import Counter, defaultdict
 
-
+#This is a test Sentence, This will be replaced by the sentence the user enters
 testSentence = """retired vice president and treasurer of"""
 
+#The Following function entrs the Count and Probabilty of each Bigrams
 def writeProbabilityToFile(bigramCount,unigramCount,file):
     with open(file, 'w') as f:
         f.write("Bigram Count and Probabilities\n")
@@ -19,6 +20,7 @@ def writeProbabilityToFile(bigramCount,unigramCount,file):
             denominator = unigramCount[pair[1]]  # pair[1] gives the previous word in the bigram pair
             probability = numerator/denominator
             f.write("Bigram:"+str(pair)+",\tCount:"+str(bigramCount[pair])+",\tProbability:"+str(probability)+"\n")
+
 
 #writes the unigram and bigram count list to file
 def writeToFile(filename,countList):
@@ -40,7 +42,7 @@ def getTokenCount(file):
     wordCount = {}
     wordCount = Counter(words)
 
-    #writeToFile('C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\unigramCount.txt', wordCount)
+    writeToFile('Q1-unigramCount.txt', wordCount)
     getBigramCount(words,wordCount)
 
 
@@ -50,7 +52,7 @@ def getBigramCount(words,unigramCount):
     #store word and next word in BigramCount not all combinations
     bigramCount = (Counter(zip(words[1:],words)))
 
-    writeToFile('C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\bigramCount.txt', bigramCount)
+    #writeToFile('Q1-bigramCount.txt', bigramCount)
 
     print('Unigram and Bigram counts written to file')
 
@@ -58,7 +60,7 @@ def getBigramCount(words,unigramCount):
 
 def getBigramProb(testSentencewords, unigramCount, bigramCount,words):
 
-    file = 'C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\bigramProbabilty.txt'
+    file = 'Q1-bigramProbabilty.txt'
     writeProbabilityToFile(bigramCount, unigramCount, file)
 
     testSentencewordCount = len(testSentencewords)
@@ -66,9 +68,10 @@ def getBigramProb(testSentencewords, unigramCount, bigramCount,words):
     bigramProbability = 1
     probabiilty=1
 
+
     #TEST SENTENCE CALCULATIONS
     #WITHOUT SMOOTHING
-
+    print('Computing Probabilities for test sentences...')
     if(testSentencewordCount<2):
         print('sentence less than two words')
 
@@ -97,7 +100,8 @@ def getBigramProb(testSentencewords, unigramCount, bigramCount,words):
         print('---------------------------------------')
         print('Test sentence: ' + testSentence)
         print('Bigram Probabilty without smoothing : ')
-        print(bigramProbability)# TO DO --> try log probability as well
+        print(bigramProbability)#
+
 
         # WITH SMOOTHING
         numerator = 1
@@ -123,7 +127,8 @@ def getBigramProb(testSentencewords, unigramCount, bigramCount,words):
         print('---------------------------------------')
         print('Test sentence: ' + testSentence)
         print('Bigram Probabilty with add one smoothing : ')
-        print(bigramProbabilityWithSmoothing)  # TO DO --> try log probability as well
+        print(bigramProbabilityWithSmoothing)
+        print('---------------------------------------')
         goodTuringProbability(words, unigramCount, bigramCount,testSentencewords)
 
 
@@ -167,10 +172,10 @@ def goodTuringProbability(words, unigram, bigram, testSentenceWords):
             bigramGT[pair] = countAsDict / countAsDict[0]
             bigramProbGT[pair] = countAsDict[1] / countOfBigram
 
-    #writeToFile('C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\goodTuringBigramCount.txt',bigramGT)
-    #writeToFile('C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\goodTuringBigramProbability.txt',bigramProbGT)
-    filename = 'C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\goodTuringWithProbability.txt'
-
+    #writeToFile('goodTuringBigramCount.txt',bigramGT)
+    #writeToFile('goodTuringBigramProbability.txt',bigramProbGT)
+    filename = 'Q1-goodTuringWithProbability.txt'
+    writeToFile(filename,bigramProbGT)
     #COMPUTING PROBABILITY FOR GOOD TURING USING TEST SENTENCE
 
     for value in bigram.values():
@@ -212,10 +217,10 @@ def goodTuringProbability(words, unigram, bigram, testSentenceWords):
 
 #PROGRAM EXECUTION BEGINS HERE
 #input file
-file ='C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\corpus.txt'
-#file=input("Enter file path to corpus in the format : C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\corpus.txt")
-#testSentence = input('Enter Test Sentence')
-print('Calculating count of tokens')
+#file ='C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\corpus.txt'
+file=input("Enter file path and name of corpus, (format: C:\\Users\\Vidya\\Desktop\\NLP\\Homework2\\corpus.txt):\n")
+testSentence = input('Enter Test Sentence:\n')
+print('Calculating count of tokens...')
 getTokenCount(file)
 
 print ('Done')
